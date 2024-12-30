@@ -2,7 +2,7 @@
 // Created by Ollie Cheng on 29/12/2024.
 //
 
-#include "spoa/utils.h"
+#include "spoa/utils.hpp"
 
 #include <algorithm>
 

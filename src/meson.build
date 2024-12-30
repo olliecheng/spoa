@@ -18,6 +18,7 @@ spoa_sources = files([
   'simd_alignment_engine_dispatcher.cpp',
   'sisd_alignment_engine.cpp',
   'version.cpp',
+  'utils.cpp'
 ]) + spoa_config_headers
 
 spoa_simd_lib = []

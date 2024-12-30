@@ -14,5 +14,6 @@ install_headers(
     'spoa/graph.hpp',
     'spoa/spoa.hpp',
     'spoa/version.hpp',
+    'spoa/utils.hpp'
   ]),
   subdir : 'spoa')

@@ -1,7 +1,7 @@
 // Copyright (c) 2020 Robert Vaser
 
 #include "spoa/graph.hpp"
-#include <spoa/utils.h>
+#include "spoa/utils.hpp"
 
 #include <algorithm>
 #include <cassert>
