@@ -180,7 +180,9 @@ add_library(spoa
   src/graph.cpp
   src/simd_alignment_engine_dispatcher.cpp
   src/sisd_alignment_engine.cpp
-  src/version.cpp)
+  src/version.cpp
+  src/utils.cpp
+)
 add_library(spoa::spoa ALIAS spoa)
 
 target_include_directories(spoa PUBLIC
