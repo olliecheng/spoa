@@ -10,7 +10,7 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include "spoa/utils.hpp"
+#include "utils.hpp"
 
 #ifdef SPOA_USE_CEREAL
 #include "cereal/access.hpp"
