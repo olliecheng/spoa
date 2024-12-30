@@ -323,9 +323,12 @@ int main(int argc, char** argv) {
   for (const auto& it : results) {
     switch (it) {
       case 0: {
-        auto consensus = graph.GenerateConsensus(min_coverage);
-        std::cout << ">Consensus LN:i:" << consensus.size() << std::endl
-                  << consensus << std::endl;
+          auto [consensus, quality] = graph.GenerateConsensusWithQuality(min_coverage);
+          std::cout
+            << "@Consensus LN:i:" << consensus.size() << std::endl
+            << consensus << std::endl
+            << "+" << std::endl
+            << quality << std::endl;
         break;
       }
       case 1:

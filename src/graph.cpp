@@ -1,6 +1,7 @@
 // Copyright (c) 2020 Robert Vaser
 
 #include "spoa/graph.hpp"
+#include <spoa/utils.h>
 
 #include <algorithm>
 #include <cassert>
@@ -11,9 +12,10 @@
 
 namespace spoa {
 
-Graph::Node::Node(std::uint32_t id, std::uint32_t code)
+Graph::Node::Node(std::uint32_t id, std::uint32_t code, qual quality)
     : id(id),
       code(code),
+      quality(quality),
       inedges(),
       outedges(),
       aligned_nodes() {
@@ -73,8 +75,8 @@ Graph::Graph()
       consensus_() {
 }
 
-Graph::Node* Graph::AddNode(std::uint32_t code) {
-  nodes_.emplace_back(new Node(nodes_.size(), code));
+Graph::Node* Graph::AddNode(std::uint32_t code, qual weight) {
+  nodes_.emplace_back(new Node(nodes_.size(), code, weight));
   return nodes_.back().get();
 }
 
@@ -100,7 +102,7 @@ Graph::Node* Graph::AddSequence(
   }
   Node* prev = nullptr;
   for (std::uint32_t i = begin; i < end; ++i) {
-    auto curr = AddNode(coder_[sequence[i]]);
+    auto curr = AddNode(coder_[sequence[i]], weights[i]);
     if (prev) {  // both nodes contribute to the weight
       AddEdge(prev, curr, weights[i - 1] + weights[i]);
     }
@@ -205,22 +207,26 @@ void Graph::AddAlignment(
     }
 
     std::uint32_t code = coder_[sequence[it.second]];
+    const auto quality = static_cast<qual>(weights[it.second]);
+
     Node* curr = nullptr;
     if (it.first == -1) {
-      curr = AddNode(code);
+      curr = AddNode(code, quality);
     } else {
       auto jt = nodes_[it.first].get();
       if (jt->code == code) {
         curr = jt;
+        curr->quality = combineQuality(curr->quality, quality);
       } else {
         for (const auto& kt : jt->aligned_nodes) {
           if (kt->code == code) {
             curr = kt;
+            curr->quality = combineQuality(curr->quality, quality);
             break;
           }
         }
         if (!curr) {
-          curr = AddNode(code);
+          curr = AddNode(code, quality);
           for (const auto& kt : jt->aligned_nodes) {
             kt->aligned_nodes.emplace_back(curr);
             curr->aligned_nodes.emplace_back(kt);
@@ -383,6 +389,20 @@ std::string Graph::GenerateConsensus(std::int32_t min_coverage) {
     }
   }
   return dst;
+}
+
+std::tuple<std::string, std::string> Graph::GenerateConsensusWithQuality(std::int32_t min_coverage) {
+  TraverseHeaviestBundle();
+  std::string dst{};
+  std::string quality{};
+
+  for (const auto& it : consensus_) {
+    if (static_cast<std::int32_t>(it->Coverage()) >= min_coverage) {
+      dst += decoder_[it->code];
+      quality += it->quality + 33;
+    }
+  }
+  return {dst, quality};
 }
 
 std::string Graph::GenerateConsensus(std::int32_t min_coverage,
@@ -599,7 +619,7 @@ Graph Graph::Subgraph(
     if (!is_in_subgraph[it->id]) {
       continue;
     }
-    subgraph.AddNode(it->code);
+    subgraph.AddNode(it->code, it->quality);
     graph_to_subgraph[it->id] = subgraph.nodes_.back().get();
     (*subgraph_to_graph)[subgraph.nodes_.back()->id] = it.get();
   }

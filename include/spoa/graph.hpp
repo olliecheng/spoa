@@ -10,6 +10,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <spoa/utils.h>
 
 #ifdef SPOA_USE_CEREAL
 #include "cereal/access.hpp"
@@ -21,6 +22,8 @@
 namespace spoa {
 
 using Alignment = std::vector<std::pair<std::int32_t, std::int32_t>>;
+
+
 
 class Graph {
  public:
@@ -39,7 +42,7 @@ class Graph {
 
   struct Node {
    public:
-    Node(std::uint32_t id, std::uint32_t code);
+    Node(std::uint32_t id, std::uint32_t code, qual quality);
 
     Node(const Node&) = default;
     Node& operator=(const Node&) = default;
@@ -53,6 +56,7 @@ class Graph {
 
     std::uint32_t id;
     std::uint32_t code;
+    qual quality;
     std::vector<Edge*> inedges;
     std::vector<Edge*> outedges;
     std::vector<Node*> aligned_nodes;
@@ -167,6 +171,7 @@ class Graph {
   std::string GenerateConsensus();
 
   std::string GenerateConsensus(std::int32_t min_coverage);
+  std::tuple<std::string, std::string> GenerateConsensusWithQuality(std::int32_t min_coverage);
 
   std::string GenerateConsensus(
       std::int32_t min_coverage,
@@ -283,7 +288,7 @@ class Graph {
 #endif
 
  private:
-  Node* AddNode(std::uint32_t code);
+  Node* AddNode(std::uint32_t code, float weight);
 
   void AddEdge(Node* tail, Node* head, std::uint32_t weight);
 
