@@ -154,6 +154,83 @@ namespace spoa {
     return AddAlignment(alignment, sequence.c_str(), sequence.size(), weights);
   }
 
+  Graph::AlignmentResult Graph::PredictAlignment(
+    const Alignment& alignment,
+    const char* sequence,
+    std::uint32_t sequence_len) {
+    if (sequence_len == 0) {
+      return Graph::AlignmentResult{ 0, 0, 0 };
+    }
+
+    if (alignment.empty()) {
+      return Graph::AlignmentResult{ sequence_len, sequence_len, sequence_len };
+    }
+
+    // add new codes to the coder and decoder as necessary
+    for (std::uint32_t i = 0; i < sequence_len; ++i) {
+      if (coder_[sequence[i]] == -1) {
+        coder_[sequence[i]] = num_codes_;
+        decoder_[num_codes_++] = sequence[i];
+      }
+    }
+
+    // Count valid positions in the sequence that are aligned
+    std::uint32_t valid_nodes = 0;
+    for (const auto& it : alignment) {
+      if (it.second != -1) {
+        if (it.second < 0 || it.second >= static_cast<std::int32_t>(sequence_len)) {
+          throw std::invalid_argument(
+            "[spoa::Graph::PredictAlignment] error: invalid alignment");
+        }
+        valid_nodes++;
+      }
+    }
+
+    std::uint32_t new_nodes = 0;
+
+    // Simulate alignment to count how many new nodes would be created
+    for (const auto& it : alignment) {
+      if (it.second == -1) {
+        continue;
+      }
+
+      // the code in the aligned sequence to add
+      std::uint32_t code = coder_[sequence[it.second]];
+
+      if (it.first == -1) {
+        // No existing node to align with, would need a new one
+        new_nodes++;
+      }
+
+      else {
+        // jt is the node in the added sequence
+        auto jt = nodes_[it.first].get();
+        if (jt->code == code) {
+          // no new node is needed!
+        }
+        else {
+          // we can first check over the other aligned nodes at this position
+          // to see if we can align with another node
+          bool found_match = false;
+
+          for (const auto& kt : jt->aligned_nodes) {
+            if (kt->code == code) {
+              found_match = true;
+              break;
+            }
+          }
+
+          // If no match found, we would need a new node
+          if (!found_match) {
+            new_nodes++;
+          }
+        }
+      }
+    }
+
+    return Graph::AlignmentResult{ new_nodes, sequence_len, valid_nodes };
+  }
+
   Graph::AlignmentResult Graph::AddAlignment(
     const Alignment& alignment,
     const char* sequence, std::uint32_t sequence_len,

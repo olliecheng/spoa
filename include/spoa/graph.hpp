@@ -171,6 +171,11 @@ namespace spoa {
       const char* sequence, std::uint32_t sequence_len,
       const char* quality, std::uint32_t quality_len);
 
+    AlignmentResult PredictAlignment(
+      const Alignment& alignment,
+      const char* sequence,
+      std::uint32_t sequence_len);
+
     std::vector<std::string> GenerateMultipleSequenceAlignment(
       bool include_consensus = false);
 
