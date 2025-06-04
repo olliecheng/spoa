@@ -360,6 +360,22 @@ SimdAlignmentEngine<A>::SimdAlignmentEngine(
 }
 
 template<Architecture A>
+std::string SimdAlignmentEngine<A>::AlignmentEngineType() {
+  switch (A) {
+    case Architecture::kAVX2:
+      return "SIMD-AVX2";
+    case Architecture::kSSE4_1:
+      return "SIMD-SSE4.1";
+    case Architecture::kSSE2:
+      return "SIMD-SSE2";
+    case Architecture::kAutomatic:
+      return "SIMD-Automatic";
+    default:
+      return "SIMD-Unknown";
+  }
+}
+
+template<Architecture A>
 void SimdAlignmentEngine<A>::Prealloc(
     std::uint32_t max_sequence_len,
     std::uint8_t alphabet_size) {

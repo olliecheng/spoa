@@ -101,6 +101,10 @@ namespace spoa {
     return Align(sequence.c_str(), sequence.size(), graph, score);
   }
 
+  std::string AlignmentEngine::AlignmentEngineType() {
+    return "Unknown";
+  }
+
   std::int64_t AlignmentEngine::WorstCaseAlignmentScore(
     std::int64_t i,
     std::int64_t j) const {

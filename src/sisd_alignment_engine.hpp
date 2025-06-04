@@ -41,6 +41,8 @@ class SisdAlignmentEngine: public AlignmentEngine {
       const Graph& graph,
       std::int32_t* score) override;
 
+  std::string AlignmentEngineType() override;
+
  private:
   SisdAlignmentEngine(
       AlignmentType type,

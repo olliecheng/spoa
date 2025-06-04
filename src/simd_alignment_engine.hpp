@@ -55,6 +55,8 @@ class SimdAlignmentEngine: public AlignmentEngine {
       const Graph& graph,
       std::int32_t* score) override;
 
+  std::string AlignmentEngineType() override;
+
   friend std::unique_ptr<AlignmentEngine> CreateSimdAlignmentEngine(
       AlignmentType type,
       AlignmentSubtype subtype,

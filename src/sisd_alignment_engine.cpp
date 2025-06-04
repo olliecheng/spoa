@@ -61,6 +61,10 @@ SisdAlignmentEngine::SisdAlignmentEngine(
       pimpl_(new Implementation()) {
 }
 
+std::string SisdAlignmentEngine::AlignmentEngineType() {
+  return "SISD";
+}
+
 void SisdAlignmentEngine::Prealloc(
     std::uint32_t max_sequence_len,
     std::uint8_t alphabet_size) {
