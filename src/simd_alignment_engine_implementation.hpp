@@ -360,6 +360,15 @@ SimdAlignmentEngine<A>::SimdAlignmentEngine(
 }
 
 template<Architecture A>
+std::uint64_t SimdAlignmentEngine<A>::StorageSize() {
+#if defined(__AVX2__) || defined(__SSE4_1__) || defined(SPOA_USE_SIMDE)
+  return pimpl_->M_storage.capacity() * sizeof(Storage);
+#else
+  return 0;
+#endif
+}
+
+template<Architecture A>
 std::string SimdAlignmentEngine<A>::AlignmentEngineType() {
   switch (A) {
     case Architecture::kAVX2:

@@ -105,6 +105,10 @@ namespace spoa {
     return "Unknown";
   }
 
+  std::uint64_t AlignmentEngine::StorageSize() {
+    return 0;
+  }
+
   std::int64_t AlignmentEngine::WorstCaseAlignmentScore(
     std::int64_t i,
     std::int64_t j) const {

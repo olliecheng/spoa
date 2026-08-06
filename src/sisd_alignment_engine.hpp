@@ -43,6 +43,8 @@ class SisdAlignmentEngine: public AlignmentEngine {
 
   std::string AlignmentEngineType() override;
 
+  std::uint64_t StorageSize() override;
+
  private:
   SisdAlignmentEngine(
       AlignmentType type,

@@ -57,6 +57,8 @@ class SimdAlignmentEngine: public AlignmentEngine {
 
   std::string AlignmentEngineType() override;
 
+  std::uint64_t StorageSize() override;
+
   friend std::unique_ptr<AlignmentEngine> CreateSimdAlignmentEngine(
       AlignmentType type,
       AlignmentSubtype subtype,

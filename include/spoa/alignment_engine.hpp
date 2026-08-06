@@ -34,6 +34,9 @@ namespace spoa {
 
         virtual std::string AlignmentEngineType();
 
+        // Size in bytes of the dynamic programming matrix allocated by this engine.
+        virtual std::uint64_t StorageSize();
+
         static std::unique_ptr<AlignmentEngine> Create(
             AlignmentType type,
             std::int8_t m,   // match
